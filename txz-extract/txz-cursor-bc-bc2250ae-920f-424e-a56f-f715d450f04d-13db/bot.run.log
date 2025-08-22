@@ -25,3 +25,9 @@ nohup: ignoring input
 2025-08-22 13:53:11,222 INFO [aiogram.event] Update id=428584752 is handled. Duration 416 ms by bot id=7818286873
 2025-08-22 13:53:17,132 INFO [aiogram.event] Update id=428584753 is handled. Duration 377 ms by bot id=7818286873
 2025-08-22 13:55:29,168 INFO [aiogram.event] Update id=428584754 is handled. Duration 317 ms by bot id=7818286873
+2025-08-22 14:04:23,876 ERROR [aiogram.dispatcher] Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-22 14:04:23,876 WARNING [aiogram.dispatcher] Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7818286873)
+2025-08-22 14:04:25,169 INFO [aiogram.dispatcher] Connection established (tryings = 1, bot id = 7818286873)
+2025-08-22 14:04:25,547 INFO [aiogram.event] Update id=428584757 is handled. Duration 375 ms by bot id=7818286873
+2025-08-22 14:04:25,618 INFO [aiogram.event] Update id=428584759 is handled. Duration 442 ms by bot id=7818286873
+2025-08-22 14:04:25,648 INFO [aiogram.event] Update id=428584756 is handled. Duration 478 ms by bot id=7818286873
