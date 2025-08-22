@@ -67,5 +67,7 @@
       ]
     }
   },
-  "operator_contact": "@CashGator"
+  "operator_contact": "@CashGator",
+  "operator_message_text": "Свяжитесь с оператором по кнопке ниже:",
+  "operator_summary_photo_file_id": "AgACAgIAAxkBAAIFzGipXqHYsHfnkCK5lcpgVnM4iIziAAL8_zEbwc5ISZg5ICsqPHGDAQADAgADeQADNgQ"
 }
