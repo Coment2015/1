@@ -1304,8 +1304,12 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 	if not (0 <= place_idx < len(places)):
 		await callback.answer("Место не найдено", show_alert=False)
 		return
-	# Отправляем только заданный текст без дополнительных данных
+	# Чистый чат: удаляем предыдущее сообщение со списком мест
 	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
 		await callback.message.answer(
 			"- При возникновении проблем свяжитесь с оператором и опишите ситуацию.\n"
 			"- Клиентский сервис работает 24/7.\n"
