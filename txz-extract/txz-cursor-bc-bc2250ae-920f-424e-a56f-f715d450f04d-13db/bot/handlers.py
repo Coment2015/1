@@ -149,8 +149,7 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 		keyboard=[
 			[KeyboardButton(text="Первое сообщение бота")],
 			[KeyboardButton(text="Фотка при выборе фасовки"), KeyboardButton(text="Фотка при выборе товара")],
-			[KeyboardButton(text="Фотка номера заказа")],
-			[KeyboardButton(text="Фотка и текст оператора")],
+			[KeyboardButton(text="Фотка номера заказа"), KeyboardButton(text="Фотка и текст оператора")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
 			[KeyboardButton(text="Вернутся 💢")],
@@ -1339,7 +1338,7 @@ async def handle_ping(message: Message) -> None:
 
 
 @router.message(F.text & ~F.text.in_(
-	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота","Вернутся 💢"]
+	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота","Вернутся 💢","Фотка и текст оператора"]
 ))
 async def handle_fallback(message: Message) -> None:
 	await message.answer(
