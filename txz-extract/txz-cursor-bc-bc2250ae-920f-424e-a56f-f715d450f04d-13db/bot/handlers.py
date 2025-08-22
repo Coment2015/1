@@ -1299,48 +1299,15 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 	if not (0 <= place_idx < len(places)):
 		await callback.answer("Место не найдено", show_alert=False)
 		return
-	# извлечь товар и фасовку из ключа вида "prod_idx:v_idx"
-	try:
-		prod_idx_str, v_idx_str = key.split(":", 1)
-		prod_idx = int(prod_idx_str)
-		v_idx = int(v_idx_str)
-		product = products[prod_idx]
-		variant = product.variants[v_idx]
-	except Exception:
-		await callback.answer("Ошибка выбора", show_alert=False)
-		return
-	address = places[place_idx]
-	# удалить предыдущее сообщение и показать выбор оплаты
+	# Отправляем только заданный текст без дополнительных данных
 	if callback.message:
-		try:
-			await callback.message.delete()
-		except Exception:
-			pass
-		text = (
-			f"Вы выбрали \"{product.name}, {variant.price_rub}₽, {address}\".\n\n"
+		await callback.message.answer(
 			"- При возникновении проблем свяжитесь с оператором и опишите ситуацию.\n"
 			"- Клиентский сервис работает 24/7.\n"
 			"- При оплате картой к сумме добавляется комиссия около 200–300 ₽. Спасибо за понимание!\n\n"
 			"Выберите способ оплаты:"
 		)
-		kb = InlineKeyboardBuilder()
-		kb.button(text="Оплата картой", callback_data=f"pay:card:{city_idx}:{prod_idx}:{v_idx}:{place_idx}")
-		kb.button(text="Оплата наличными", callback_data=f"pay:cash:{city_idx}:{prod_idx}:{v_idx}:{place_idx}")
-		kb.adjust(2)
-		kb.row(InlineKeyboardButton(text="Вернутся к каталогу", callback_data=f"city:{city_idx}"))
-		kb.row(InlineKeyboardButton(text="Вернутся к выбору города", callback_data="back_cities"))
-		await callback.message.answer(text, reply_markup=kb.as_markup())
 	await callback.answer()
-
-
-@router.callback_query(F.data.startswith("pay:card"))
-async def handle_pay_card(callback: CallbackQuery) -> None:
-	await callback.answer("Оплата картой выбрана", show_alert=False)
-
-
-@router.callback_query(F.data.startswith("pay:cash"))
-async def handle_pay_cash(callback: CallbackQuery) -> None:
-	await callback.answer("Оплата наличными выбрана", show_alert=False)
 
 
 def _persist_state() -> None:
