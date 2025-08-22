@@ -27,6 +27,7 @@ def default_state() -> Dict[str, Any]:
 		"first_message": {"text": "Привет! Вы прошли проверку. Напишите /help, чтобы узнать что я умею.", "photo_file_id": None},
 		"product_select_photo_file_id": None,
 		"variant_select_photo_file_id": None,
+		"order_summary_photo_file_id": None,
 		"products": [],  # [{"name": str, "variants": [{"size_label": str, "price_rub": int}]}]
 		"city_products_enabled": {},  # {str(city_idx): [product_idx, ...]}
 		"city_variant_addresses": {},  # {str(city_idx): {"prod:var": [address, ...]}}

@@ -81,6 +81,7 @@ first_message: FirstMessageConfig = FirstMessageConfig(
 products: List[Product] = []
 product_select_photo_file_id: Optional[str] = None
 variant_select_photo_file_id: Optional[str] = None
+order_summary_photo_file_id: Optional[str] = None
 # Привязка товаров к городам: индекс города -> набор индексов товаров, доступных в городе
 city_products_enabled: Dict[int, Set[int]] = {}
 # Адреса на уровень города и на уровень пары (товар, фасовка)
@@ -98,6 +99,7 @@ first_message.text = fm.get("text")
 first_message.photo_file_id = fm.get("photo_file_id")
 product_select_photo_file_id = _loaded.get("product_select_photo_file_id")
 variant_select_photo_file_id = _loaded.get("variant_select_photo_file_id")
+order_summary_photo_file_id = _loaded.get("order_summary_photo_file_id")
 products_data = _loaded.get("products", [])
 products[:] = [Product(name=p.get("name",""), variants=[ProductVariant(size_label=v.get("size_label",""), price_rub=int(v.get("price_rub",0))) for v in p.get("variants",[])]) for p in products_data]
 city_products_enabled = {int(k): set(v) for k, v in _loaded.get("city_products_enabled", {}).items()}
@@ -117,6 +119,7 @@ class AdminStates(StatesGroup):
 	waiting_variant_photo = State()
 	waiting_address_name = State()
 	waiting_operator_contact = State()
+	waiting_order_summary_photo = State()
 
 
 # ========================= Утилиты клавиатур =========================
@@ -140,9 +143,9 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 		keyboard=[
 			[KeyboardButton(text="Первое сообщение бота")],
 			[KeyboardButton(text="Фотка при выборе фасовки"), KeyboardButton(text="Фотка при выборе товара")],
+			[KeyboardButton(text="Фото номера заказа")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
-			[KeyboardButton(text="Оператор бота")],
 		],
 		resize_keyboard=True,
 	)
@@ -484,7 +487,14 @@ async def show_admin_menu(message: Message) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
 		return
-	await message.answer("Выберите раздел:", reply_markup=kb_interface_menu())
+	kb = ReplyKeyboardMarkup(
+		keyboard=[
+			[KeyboardButton(text="Интерфейс бота")],
+			[KeyboardButton(text="Оператор бота")],
+		],
+		resize_keyboard=True,
+	)
+	await message.answer("Выберите раздел:", reply_markup=kb)
 
 
 @router.message(F.text == "Интерфейс бота")
@@ -493,6 +503,30 @@ async def show_interface_menu(message: Message) -> None:
 	if user_id not in admins:
 		return
 	await message.answer("Доступные настройки:", reply_markup=kb_first_message_menu())
+
+
+@router.message(F.text == "Оператор бота")
+async def operator_menu_prompt(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	await state.set_state(AdminStates.waiting_operator_contact)
+	await message.answer("Пришлите username оператора (в формате @username) или ссылку на профиль.")
+
+
+@router.message(AdminStates.waiting_operator_contact)
+async def admin_operator_contact_save(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	contact = (message.text or "").strip()
+	if not contact:
+		await message.answer("Контакт не может быть пустым. Пришлите username или ссылку.")
+		return
+	operator_contact = contact
+	_persist_state()
+	await state.clear()
+	await message.answer("Контакт оператора сохранен ✅")
 
 
 @router.message(F.text == "Города")
@@ -1342,7 +1376,10 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 		kb.button(text="Перейти к оплате ▶️", callback_data=f"order_proceed:{city_idx}:{prod_idx}:{v_idx}:{place_idx}")
 		kb.button(text="Отменить выбор 💢", callback_data=f"order_cancel:{city_idx}")
 		kb.adjust(1)
-		await callback.message.answer(text, reply_markup=kb.as_markup())
+		if order_summary_photo_file_id:
+			await callback.message.answer_photo(photo=order_summary_photo_file_id, caption=text, reply_markup=kb.as_markup())
+		else:
+			await callback.message.answer(text, reply_markup=kb.as_markup())
 	await callback.answer()
 
 
@@ -1416,6 +1453,7 @@ def _persist_state() -> None:
 		"first_message": {"text": first_message.text, "photo_file_id": first_message.photo_file_id},
 		"product_select_photo_file_id": product_select_photo_file_id,
 		"variant_select_photo_file_id": variant_select_photo_file_id,
+		"order_summary_photo_file_id": order_summary_photo_file_id,
 		"products": [
 			{"name": p.name, "variants": [{"size_label": v.size_label, "price_rub": v.price_rub} for v in p.variants]}
 			for p in products
