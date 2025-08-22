@@ -32,6 +32,8 @@ def default_state() -> Dict[str, Any]:
 		"city_products_enabled": {},  # {str(city_idx): [product_idx, ...]}
 		"city_variant_addresses": {},  # {str(city_idx): {"prod:var": [address, ...]}}
 		"operator_contact": None,
+		"operator_message_text": "Свяжитесь с оператором по кнопке ниже:",
+		"operator_summary_photo_file_id": None,
 	}
 
 

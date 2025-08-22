@@ -89,6 +89,8 @@ city_addresses: Dict[int, List[str]] = {}
 city_variant_addresses: Dict[int, Dict[str, List[str]]] = {}
 # Контакт оператора (username вида @name или ссылка)
 operator_contact: Optional[str] = None
+operator_message_text: str = "Свяжитесь с оператором по кнопке ниже:"
+operator_summary_photo_file_id: Optional[str] = None
 
 # Загрузка состояния при импорте
 _loaded = _storage_load_state()
@@ -106,6 +108,8 @@ city_products_enabled = {int(k): set(v) for k, v in _loaded.get("city_products_e
 city_addresses = {int(k): list(v) for k, v in (_loaded.get("city_addresses") or {}).items()}
 city_variant_addresses = {int(k): {kv: list(av) for kv, av in v.items()} for k, v in (_loaded.get("city_variant_addresses") or {}).items()}
 operator_contact = _loaded.get("operator_contact")
+operator_message_text = _loaded.get("operator_message_text", operator_message_text)
+operator_summary_photo_file_id = _loaded.get("operator_summary_photo_file_id")
 
 
 class AdminStates(StatesGroup):
@@ -120,6 +124,8 @@ class AdminStates(StatesGroup):
 	waiting_address_name = State()
 	waiting_operator_contact = State()
 	waiting_order_summary_photo = State()
+	waiting_operator_message_text = State()
+	waiting_operator_summary_photo = State()
 
 
 # ========================= Утилиты клавиатур =========================
@@ -144,6 +150,7 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 			[KeyboardButton(text="Первое сообщение бота")],
 			[KeyboardButton(text="Фотка при выборе фасовки"), KeyboardButton(text="Фотка при выборе товара")],
 			[KeyboardButton(text="Фотка номера заказа")],
+			[KeyboardButton(text="Фотка и текст оператора")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
 			[KeyboardButton(text="Вернутся 💢")],
@@ -465,7 +472,8 @@ async def handle_action_history(callback: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "action:operator")
 async def handle_action_operator(callback: CallbackQuery) -> None:
-	await callback.answer("Оператор свяжется с вами", show_alert=False)
+	# Поведение как у pay_method:operator
+	await handle_pay_operator(callback)
 
 
 @router.callback_query(F.data == "action:promo")
@@ -1457,10 +1465,19 @@ async def handle_pay_operator(callback: CallbackQuery) -> None:
 		if link.startswith("@"):  # username -> ссылка
 			link = f"https://t.me/{link[1:]}"
 		kb = InlineKeyboardBuilder()
-		kb.button(text="Перейти к оператору", url=link)
+		kb.button(text="Написать оператору", url=link)
 		kb.adjust(1)
-		await callback.message.answer("Свяжитесь с оператором по кнопке ниже:", reply_markup=kb.as_markup())
+		if operator_summary_photo_file_id:
+			await callback.message.answer_photo(photo=operator_summary_photo_file_id, caption=operator_message_text, reply_markup=kb.as_markup())
+		else:
+			await callback.message.answer(operator_message_text, reply_markup=kb.as_markup())
 	await callback.answer()
+
+
+@router.callback_query(F.data == "action:operator")
+async def handle_action_operator(callback: CallbackQuery) -> None:
+	# Поведение как у pay_method:operator
+	await handle_pay_operator(callback)
 
 
 @router.message(F.text == "Фотка номера заказа")
@@ -1500,6 +1517,74 @@ async def order_summary_photo_save(message: Message, state: FSMContext) -> None:
 	await message.answer("Фото сохранено ✅", reply_markup=kb_first_message_menu())
 
 
+@router.message(F.text == "Фотка и текст оператора")
+async def operator_card_menu(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		await message.answer("Нет прав")
+		return
+	kb = InlineKeyboardBuilder()
+	kb.row(InlineKeyboardButton(text="Изменить текст", callback_data="admin_operator_text"))
+	kb.row(InlineKeyboardButton(text="Изменить фото", callback_data="admin_operator_photo"))
+	await message.answer("Выберите действие:", reply_markup=kb.as_markup())
+
+
+@router.callback_query(F.data == "admin_operator_text")
+async def admin_operator_text_prompt(callback: CallbackQuery, state: FSMContext) -> None:
+	user_id = callback.from_user.id
+	if user_id not in admins:
+		await callback.answer("Нет прав", show_alert=False)
+		return
+	await state.set_state(AdminStates.waiting_operator_message_text)
+	await callback.answer()
+	if callback.message:
+		await callback.message.answer("Пришлите новый текст для сообщения оператора")
+
+
+@router.message(AdminStates.waiting_operator_message_text)
+async def admin_operator_text_save(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	text = (message.text or "").strip()
+	if not text:
+		await message.answer("Текст пуст. Пришлите текст.")
+		return
+	global operator_message_text
+	operator_message_text = text
+	_persist_state()
+	await state.clear()
+	await message.answer("Текст сохранён ✅", reply_markup=kb_first_message_menu())
+
+
+@router.callback_query(F.data == "admin_operator_photo")
+async def admin_operator_photo_prompt(callback: CallbackQuery, state: FSMContext) -> None:
+	user_id = callback.from_user.id
+	if user_id not in admins:
+		await callback.answer("Нет прав", show_alert=False)
+		return
+	await state.set_state(AdminStates.waiting_operator_summary_photo)
+	await callback.answer()
+	if callback.message:
+		await callback.message.answer("Пришлите фото, которое будет показано в блоке оператора")
+
+
+@router.message(AdminStates.waiting_operator_summary_photo, F.photo)
+async def admin_operator_photo_save(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	photo = message.photo[-1] if message.photo else None
+	if not photo:
+		await message.answer("Фото не получено, попробуйте ещё раз.")
+		return
+	global operator_summary_photo_file_id
+	operator_summary_photo_file_id = photo.file_id
+	_persist_state()
+	await state.clear()
+	await message.answer("Фото сохранено ✅", reply_markup=kb_first_message_menu())
+
+
 def _persist_state() -> None:
 	state = {
 		"admins": list(admins),
@@ -1516,5 +1601,7 @@ def _persist_state() -> None:
 		"city_addresses": {str(k): list(v) for k, v in city_addresses.items()},
 		"city_variant_addresses": {str(k): {kv: list(av) for kv, av in v.items()} for k, v in city_variant_addresses.items()},
 		"operator_contact": operator_contact,
+		"operator_message_text": operator_message_text,
+		"operator_summary_photo_file_id": operator_summary_photo_file_id,
 	}
 	_storage_save_state(state)
