@@ -1289,9 +1289,14 @@ async def handle_fallback(message: Message) -> None:
 @router.callback_query(F.data.startswith("user_place:"))
 async def handle_user_place(callback: CallbackQuery) -> None:
 	try:
-		_, city_idx_str, key, place_idx_str = (callback.data or "").split(":", 3)
-		city_idx = int(city_idx_str)
-		place_idx = int(place_idx_str)
+		data = callback.data or ""
+		parts = data.split(":")
+		# ожидаем минимум: ["user_place", city_idx, <key...>, place_idx]
+		if len(parts) < 4:
+			raise ValueError("bad format")
+		city_idx = int(parts[1])
+		place_idx = int(parts[-1])
+		key = ":".join(parts[2:-1])
 	except Exception:
 		await callback.answer("Ошибка", show_alert=False)
 		return
