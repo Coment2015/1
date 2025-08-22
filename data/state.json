@@ -23,7 +23,7 @@
   },
   "product_select_photo_file_id": "AgACAgIAAxkBAAIE8GiocSuFHfba1hSOuWmsEQiIytJ5AAJg9zEbwc5ASXHszCmMxvMLAQADAgADeQADNgQ",
   "variant_select_photo_file_id": "AgACAgIAAxkBAAIE9GiocTESBytv6JqCEvY1UTSBPfi6AAJi9zEbwc5ASSl4uWhzIX3oAQADAgADeQADNgQ",
-  "order_summary_photo_file_id": null,
+  "order_summary_photo_file_id": "AgACAgIAAxkBAAIFLWiodMgrUaeXBaZswbTgH_zbVMl9AAKB9zEbwc5ASbkDPRNCDDpKAQADAgADeQADNgQ",
   "products": [
     {
       "name": "Giov",
@@ -67,5 +67,5 @@
       ]
     }
   },
-  "operator_contact": null
+  "operator_contact": "@CashGator"
 }
