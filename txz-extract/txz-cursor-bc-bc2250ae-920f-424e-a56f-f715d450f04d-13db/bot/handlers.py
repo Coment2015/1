@@ -1039,6 +1039,7 @@ async def admin_product_del(callback: CallbackQuery) -> None:
 async def product_photo_prompt(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
+		await message.answer("Нет прав")
 		return
 	await state.set_state(AdminStates.waiting_product_photo)
 	await message.answer("Пришлите фото, которое будет показано с сообщением ‘Выберите товар’. Можно позже заменить.")
@@ -1048,6 +1049,7 @@ async def product_photo_prompt(message: Message, state: FSMContext) -> None:
 async def product_photo_save(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
+		await message.answer("Нет прав")
 		return
 	photo = message.photo[-1] if message.photo else None
 	if not photo:
@@ -1320,7 +1322,7 @@ async def handle_ping(message: Message) -> None:
 
 
 @router.message(F.text & ~F.text.in_(
-	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Оператор бота"]
+	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота"]
 ))
 async def handle_fallback(message: Message) -> None:
 	await message.answer(
@@ -1453,6 +1455,17 @@ async def handle_pay_operator(callback: CallbackQuery) -> None:
 async def order_summary_photo_prompt(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
+		await message.answer("Нет прав")
+		return
+	await state.set_state(AdminStates.waiting_order_summary_photo)
+	await message.answer("Пришлите фото, которое будет показано в карточке заказа над текстом.")
+
+
+@router.message(F.text == "Фото номера заказа")
+async def order_summary_photo_prompt_alias(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		await message.answer("Нет прав")
 		return
 	await state.set_state(AdminStates.waiting_order_summary_photo)
 	await message.answer("Пришлите фото, которое будет показано в карточке заказа над текстом.")
@@ -1462,6 +1475,7 @@ async def order_summary_photo_prompt(message: Message, state: FSMContext) -> Non
 async def order_summary_photo_save(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
+		await message.answer("Нет прав")
 		return
 	photo = message.photo[-1] if message.photo else None
 	if not photo:
