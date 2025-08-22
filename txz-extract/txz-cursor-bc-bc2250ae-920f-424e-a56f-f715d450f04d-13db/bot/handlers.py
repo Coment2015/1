@@ -1304,18 +1304,71 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 	if not (0 <= place_idx < len(places)):
 		await callback.answer("Место не найдено", show_alert=False)
 		return
+	# Извлекаем товар/фасовку из key
+	try:
+		prod_idx_str, v_idx_str = key.split(":", 1)
+		prod_idx = int(prod_idx_str)
+		v_idx = int(v_idx_str)
+		product = products[prod_idx]
+		variant = product.variants[v_idx]
+	except Exception:
+		await callback.answer("Ошибка", show_alert=False)
+		return
+	city_name = cities[city_idx] if 0 <= city_idx < len(cities) else ""
+	address = places[place_idx]
 	# Чистый чат: удаляем предыдущее сообщение со списком мест
 	if callback.message:
 		try:
 			await callback.message.delete()
 		except Exception:
 			pass
-		await callback.message.answer(
-			"- При возникновении проблем свяжитесь с оператором и опишите ситуацию.\n"
-			"- Клиентский сервис работает 24/7.\n"
-			"- При оплате картой к сумме добавляется комиссия около 200–300 ₽. Спасибо за понимание!\n\n"
-			"Выберите способ оплаты:"
+		# Номер заказа: #ONDF-9XXXX (4 случайные цифры после 9)
+		order_no = "#ONDF-9" + "".join(secrets.choice("0123456789") for _ in range(4))
+		text = (
+			f"🔘 Номер заказа: {order_no}\n\n"
+			f"🏘️ Город: {city_name}\n"
+			f"🏡 Локация: {address}\n"
+			f"🔰 Товар: {product.name}\n"
+			f"♻️ Позиция: {variant.size_label}\n"
+			f"💶 Цена: {variant.price_rub}₽\n\n"
+			"⚠️ Для оплаты заказа и получения координат, Вам необходимо нажать на кнопку ниже:"
 		)
+		kb = InlineKeyboardBuilder()
+		kb.button(text="Перейти к оплате ▶️", callback_data=f"order_proceed:{city_idx}:{prod_idx}:{v_idx}:{place_idx}")
+		kb.button(text="Отменить выбор 💢", callback_data=f"order_cancel:{city_idx}")
+		kb.adjust(1)
+		await callback.message.answer(text, reply_markup=kb.as_markup())
+	await callback.answer()
+
+
+@router.callback_query(F.data.startswith("order_cancel:"))
+async def handle_order_cancel(callback: CallbackQuery) -> None:
+	# Удаляем текущий экран и возвращаемся к выбору города
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		await send_city_picker(callback.message)
+	await callback.answer("Выбор отменён", show_alert=False)
+
+
+@router.callback_query(F.data.startswith("order_proceed:"))
+async def handle_order_proceed(callback: CallbackQuery) -> None:
+	# Переход к выбору способа оплаты
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		text = "Выберите способ оплаты"
+		kb = InlineKeyboardBuilder()
+		kb.button(text="💳 Банковская карта (Анонимно)", callback_data="pay_method:card")
+		kb.button(text="💰 Crypto USDT (TRC-20) I BTC", callback_data="pay_method:crypto")
+		kb.button(text="🧑‍💻 Пополнить через оператора", callback_data="pay_method:operator")
+		kb.button(text="Отменить оплату 💢", callback_data="pay_method:cancel")
+		kb.adjust(1)
+		await callback.message.answer(text, reply_markup=kb.as_markup())
 	await callback.answer()
 
 
