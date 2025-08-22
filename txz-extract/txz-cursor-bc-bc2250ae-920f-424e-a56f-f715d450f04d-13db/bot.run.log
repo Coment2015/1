@@ -3,3 +3,234 @@ nohup: ignoring input
 2025-08-22 12:03:32,538 INFO [aiogram.dispatcher] Start polling
 2025-08-22 12:03:32,636 INFO [aiogram.dispatcher] Run polling for bot @Test14_88RoBot id=7818286873 - 'Test'
 2025-08-22 12:03:33,080 INFO [aiogram.event] Update id=428584514 is handled. Duration 341 ms by bot id=7818286873
+2025-08-22 12:03:58,401 INFO [aiogram.event] Update id=428584515 is handled. Duration 215 ms by bot id=7818286873
+2025-08-22 12:04:00,451 INFO [aiogram.event] Update id=428584516 is handled. Duration 575 ms by bot id=7818286873
+2025-08-22 12:04:08,264 INFO [aiogram.event] Update id=428584517 is handled. Duration 0 ms by bot id=7818286873
+2025-08-22 12:04:13,433 INFO [aiogram.event] Update id=428584518 is handled. Duration 241 ms by bot id=7818286873
+2025-08-22 12:04:29,542 INFO [aiogram.event] Update id=428584519 is handled. Duration 127 ms by bot id=7818286873
+2025-08-22 12:04:31,925 INFO [aiogram.event] Update id=428584520 is handled. Duration 125 ms by bot id=7818286873
+2025-08-22 12:04:33,687 INFO [aiogram.event] Update id=428584521 is handled. Duration 153 ms by bot id=7818286873
+2025-08-22 12:04:36,630 INFO [aiogram.event] Update id=428584522 is handled. Duration 193 ms by bot id=7818286873
+2025-08-22 12:04:53,973 INFO [aiogram.event] Update id=428584523 is handled. Duration 121 ms by bot id=7818286873
+2025-08-22 12:04:59,694 INFO [aiogram.event] Update id=428584524 is handled. Duration 307 ms by bot id=7818286873
+2025-08-22 12:05:10,633 INFO [aiogram.event] Update id=428584525 is handled. Duration 197 ms by bot id=7818286873
+2025-08-22 12:05:12,074 INFO [aiogram.event] Update id=428584526 is handled. Duration 200 ms by bot id=7818286873
+2025-08-22 12:05:16,901 INFO [aiogram.event] Update id=428584527 is handled. Duration 238 ms by bot id=7818286873
+2025-08-22 12:05:27,659 INFO [aiogram.event] Update id=428584528 is handled. Duration 197 ms by bot id=7818286873
+2025-08-22 12:05:34,916 INFO [aiogram.event] Update id=428584529 is handled. Duration 146 ms by bot id=7818286873
+2025-08-22 12:05:42,593 INFO [aiogram.event] Update id=428584530 is handled. Duration 150 ms by bot id=7818286873
+2025-08-22 12:05:46,473 INFO [aiogram.event] Update id=428584531 is handled. Duration 368 ms by bot id=7818286873
+2025-08-22 12:05:50,624 INFO [aiogram.event] Update id=428584532 is handled. Duration 207 ms by bot id=7818286873
+2025-08-22 12:05:52,444 INFO [aiogram.event] Update id=428584533 is handled. Duration 262 ms by bot id=7818286873
+2025-08-22 12:05:57,666 INFO [aiogram.event] Update id=428584534 is handled. Duration 381 ms by bot id=7818286873
+2025-08-22 12:06:03,700 INFO [aiogram.event] Update id=428584535 is handled. Duration 232 ms by bot id=7818286873
+2025-08-22 12:06:13,089 INFO [aiogram.event] Update id=428584536 is handled. Duration 147 ms by bot id=7818286873
+2025-08-22 12:06:17,849 INFO [aiogram.event] Update id=428584537 is handled. Duration 418 ms by bot id=7818286873
+2025-08-22 12:06:21,648 INFO [aiogram.event] Update id=428584538 is handled. Duration 222 ms by bot id=7818286873
+2025-08-22 12:06:24,979 INFO [aiogram.event] Update id=428584539 is handled. Duration 261 ms by bot id=7818286873
+2025-08-22 12:06:32,717 INFO [aiogram.event] Update id=428584540 is handled. Duration 262 ms by bot id=7818286873
+2025-08-22 12:06:34,921 INFO [aiogram.event] Update id=428584541 is handled. Duration 382 ms by bot id=7818286873
+2025-08-22 12:06:39,471 INFO [aiogram.event] Update id=428584542 is handled. Duration 461 ms by bot id=7818286873
+2025-08-22 12:06:52,170 INFO [aiogram.event] Update id=428584543 is handled. Duration 148 ms by bot id=7818286873
+2025-08-22 12:06:54,043 INFO [aiogram.event] Update id=428584544 is handled. Duration 148 ms by bot id=7818286873
+2025-08-22 12:07:00,648 INFO [aiogram.event] Update id=428584545 is handled. Duration 251 ms by bot id=7818286873
+2025-08-22 12:07:02,461 INFO [aiogram.event] Update id=428584546 is handled. Duration 226 ms by bot id=7818286873
+2025-08-22 12:07:05,781 INFO [aiogram.event] Update id=428584547 is handled. Duration 249 ms by bot id=7818286873
+2025-08-22 12:07:07,366 INFO [aiogram.event] Update id=428584548 is not handled. Duration 170 ms by bot id=7818286873
+2025-08-22 12:07:07,366 ERROR [aiogram.event] Cause exception while process update id=428584548 by bot id=7818286873
+RuntimeError: This method is not mounted to a any bot instance, please call it explicilty with bot instance `await bot(method)`
+or mount method to a bot instance `method.as_(bot)` and then call it `await method`
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 56, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/txz-extract/txz-cursor-bc-bc2250ae-920f-424e-a56f-f715d450f04d-13db/bot/handlers.py", line 635, in admin_city_toggle
+    return await admin_city_products(CallbackQuery(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    ))
+    ^^
+  File "/workspace/txz-extract/txz-cursor-bc-bc2250ae-920f-424e-a56f-f715d450f04d-13db/bot/handlers.py", line 609, in admin_city_products
+    await callback.answer()
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/methods/base.py", line 89, in __await__
+    raise RuntimeError(
+    ...<4 lines>...
+    )
+RuntimeError: This method is not mounted to a any bot instance, please call it explicilty with bot instance `await bot(method)`
+or mount method to a bot instance `method.as_(bot)` and then call it `await method`
+2025-08-22 12:07:15,457 INFO [aiogram.event] Update id=428584549 is handled. Duration 328 ms by bot id=7818286873
+2025-08-22 12:07:17,709 INFO [aiogram.event] Update id=428584550 is handled. Duration 353 ms by bot id=7818286873
+2025-08-22 12:07:20,740 INFO [aiogram.event] Update id=428584551 is handled. Duration 441 ms by bot id=7818286873
+2025-08-22 12:07:27,412 INFO [aiogram.event] Update id=428584552 is handled. Duration 377 ms by bot id=7818286873
+2025-08-22 12:07:48,456 INFO [aiogram.event] Update id=428584553 is handled. Duration 325 ms by bot id=7818286873
+2025-08-22 12:08:00,024 INFO [aiogram.event] Update id=428584554 is handled. Duration 312 ms by bot id=7818286873
+2025-08-22 12:08:03,966 INFO [aiogram.event] Update id=428584555 is handled. Duration 225 ms by bot id=7818286873
+2025-08-22 12:08:08,573 INFO [aiogram.event] Update id=428584556 is handled. Duration 240 ms by bot id=7818286873
+2025-08-22 12:08:11,079 INFO [aiogram.event] Update id=428584557 is handled. Duration 637 ms by bot id=7818286873
+2025-08-22 12:08:12,830 INFO [aiogram.event] Update id=428584558 is handled. Duration 344 ms by bot id=7818286873
+2025-08-22 12:08:15,724 INFO [aiogram.event] Update id=428584559 is handled. Duration 363 ms by bot id=7818286873
+2025-08-22 12:08:24,643 INFO [aiogram.event] Update id=428584560 is handled. Duration 104 ms by bot id=7818286873
+2025-08-22 12:08:26,772 INFO [aiogram.event] Update id=428584561 is handled. Duration 117 ms by bot id=7818286873
+2025-08-22 12:08:33,397 INFO [aiogram.event] Update id=428584562 is handled. Duration 283 ms by bot id=7818286873
+2025-08-22 12:08:35,772 INFO [aiogram.event] Update id=428584563 is handled. Duration 124 ms by bot id=7818286873
+2025-08-22 12:08:38,160 INFO [aiogram.event] Update id=428584564 is handled. Duration 225 ms by bot id=7818286873
+2025-08-22 12:08:42,157 INFO [aiogram.event] Update id=428584565 is handled. Duration 241 ms by bot id=7818286873
+2025-08-22 12:08:44,964 INFO [aiogram.event] Update id=428584566 is handled. Duration 228 ms by bot id=7818286873
+2025-08-22 12:08:49,167 INFO [aiogram.event] Update id=428584567 is handled. Duration 153 ms by bot id=7818286873
+2025-08-22 12:08:54,275 INFO [aiogram.event] Update id=428584568 is handled. Duration 304 ms by bot id=7818286873
+2025-08-22 12:08:58,408 INFO [aiogram.event] Update id=428584569 is handled. Duration 423 ms by bot id=7818286873
+2025-08-22 12:09:00,579 INFO [aiogram.event] Update id=428584570 is handled. Duration 307 ms by bot id=7818286873
+2025-08-22 12:09:07,417 INFO [aiogram.event] Update id=428584571 is handled. Duration 252 ms by bot id=7818286873
+2025-08-22 12:09:09,248 INFO [aiogram.event] Update id=428584572 is not handled. Duration 230 ms by bot id=7818286873
+2025-08-22 12:09:09,248 ERROR [aiogram.event] Cause exception while process update id=428584572 by bot id=7818286873
+RuntimeError: This method is not mounted to a any bot instance, please call it explicilty with bot instance `await bot(method)`
+or mount method to a bot instance `method.as_(bot)` and then call it `await method`
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 56, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 174, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 141, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        observer=observer, update_type=update_type, event=telegram_event, **data
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/txz-extract/txz-cursor-bc-bc2250ae-920f-424e-a56f-f715d450f04d-13db/bot/handlers.py", line 635, in admin_city_toggle
+    return await admin_city_products(CallbackQuery(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    ))
+    ^^
+  File "/workspace/txz-extract/txz-cursor-bc-bc2250ae-920f-424e-a56f-f715d450f04d-13db/bot/handlers.py", line 609, in admin_city_products
+    await callback.answer()
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/aiogram/methods/base.py", line 89, in __await__
+    raise RuntimeError(
+    ...<4 lines>...
+    )
+RuntimeError: This method is not mounted to a any bot instance, please call it explicilty with bot instance `await bot(method)`
+or mount method to a bot instance `method.as_(bot)` and then call it `await method`
+2025-08-22 12:09:16,352 INFO [aiogram.event] Update id=428584573 is handled. Duration 245 ms by bot id=7818286873
+2025-08-22 12:09:22,865 INFO [aiogram.event] Update id=428584574 is handled. Duration 360 ms by bot id=7818286873
+2025-08-22 12:09:29,878 INFO [aiogram.event] Update id=428584575 is handled. Duration 328 ms by bot id=7818286873
+2025-08-22 12:09:34,584 INFO [aiogram.event] Update id=428584576 is handled. Duration 335 ms by bot id=7818286873
+2025-08-22 12:09:42,643 INFO [aiogram.event] Update id=428584577 is handled. Duration 403 ms by bot id=7818286873
+2025-08-22 12:09:49,423 INFO [aiogram.event] Update id=428584578 is handled. Duration 124 ms by bot id=7818286873
+2025-08-22 12:10:01,033 INFO [aiogram.event] Update id=428584579 is handled. Duration 441 ms by bot id=7818286873
+2025-08-22 12:10:07,433 INFO [aiogram.event] Update id=428584580 is handled. Duration 121 ms by bot id=7818286873
+2025-08-22 12:10:09,740 INFO [aiogram.event] Update id=428584581 is handled. Duration 287 ms by bot id=7818286873
+2025-08-22 12:10:16,615 INFO [aiogram.event] Update id=428584582 is handled. Duration 548 ms by bot id=7818286873
+2025-08-22 12:10:19,634 INFO [aiogram.event] Update id=428584583 is handled. Duration 673 ms by bot id=7818286873
+2025-08-22 12:10:25,911 INFO [aiogram.event] Update id=428584584 is handled. Duration 658 ms by bot id=7818286873
+2025-08-22 12:10:33,391 INFO [aiogram.event] Update id=428584585 is handled. Duration 360 ms by bot id=7818286873
+2025-08-22 12:10:38,133 INFO [aiogram.event] Update id=428584586 is handled. Duration 123 ms by bot id=7818286873
+2025-08-22 12:13:40,527 INFO [aiogram.event] Update id=428584587 is handled. Duration 245 ms by bot id=7818286873
+2025-08-22 12:13:43,156 INFO [aiogram.event] Update id=428584588 is handled. Duration 514 ms by bot id=7818286873
+2025-08-22 12:13:45,190 INFO [aiogram.event] Update id=428584589 is handled. Duration 355 ms by bot id=7818286873
+2025-08-22 12:13:49,949 INFO [aiogram.event] Update id=428584590 is handled. Duration 347 ms by bot id=7818286873
+2025-08-22 12:14:21,060 INFO [aiogram.event] Update id=428584591 is handled. Duration 157 ms by bot id=7818286873
