@@ -23,6 +23,7 @@
   },
   "product_select_photo_file_id": "AgACAgIAAxkBAAIE8GiocSuFHfba1hSOuWmsEQiIytJ5AAJg9zEbwc5ASXHszCmMxvMLAQADAgADeQADNgQ",
   "variant_select_photo_file_id": "AgACAgIAAxkBAAIE9GiocTESBytv6JqCEvY1UTSBPfi6AAJi9zEbwc5ASSl4uWhzIX3oAQADAgADeQADNgQ",
+  "order_summary_photo_file_id": null,
   "products": [
     {
       "name": "Giov",
