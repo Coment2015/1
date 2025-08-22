@@ -86,6 +86,8 @@ city_products_enabled: Dict[int, Set[int]] = {}
 # Адреса на уровень города и на уровень пары (товар, фасовка)
 city_addresses: Dict[int, List[str]] = {}
 city_variant_addresses: Dict[int, Dict[str, List[str]]] = {}
+# Контакт оператора (username вида @name или ссылка)
+operator_contact: Optional[str] = None
 
 # Загрузка состояния при импорте
 _loaded = _storage_load_state()
@@ -101,6 +103,7 @@ products[:] = [Product(name=p.get("name",""), variants=[ProductVariant(size_labe
 city_products_enabled = {int(k): set(v) for k, v in _loaded.get("city_products_enabled", {}).items()}
 city_addresses = {int(k): list(v) for k, v in (_loaded.get("city_addresses") or {}).items()}
 city_variant_addresses = {int(k): {kv: list(av) for kv, av in v.items()} for k, v in (_loaded.get("city_variant_addresses") or {}).items()}
+operator_contact = _loaded.get("operator_contact")
 
 
 class AdminStates(StatesGroup):
@@ -113,6 +116,7 @@ class AdminStates(StatesGroup):
 	waiting_product_photo = State()
 	waiting_variant_photo = State()
 	waiting_address_name = State()
+	waiting_operator_contact = State()
 
 
 # ========================= Утилиты клавиатур =========================
@@ -138,6 +142,7 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 			[KeyboardButton(text="Фотка при выборе фасовки"), KeyboardButton(text="Фотка при выборе товара")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
+			[KeyboardButton(text="Оператор бота")],
 		],
 		resize_keyboard=True,
 	)
@@ -1322,8 +1327,8 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 			await callback.message.delete()
 		except Exception:
 			pass
-		# Номер заказа: #ONDF-9XXXX (4 случайные цифры после 9)
-		order_no = "#ONDF-9" + "".join(secrets.choice("0123456789") for _ in range(4))
+		# Номер заказа: ONDF-9XXXX (4 случайные цифры после 9)
+		order_no = "ONDF-9" + "".join(secrets.choice("0123456789") for _ in range(4))
 		text = (
 			f"🔘 Номер заказа: {order_no}\n\n"
 			f"🏘️ Город: {city_name}\n"
@@ -1372,6 +1377,38 @@ async def handle_order_proceed(callback: CallbackQuery) -> None:
 	await callback.answer()
 
 
+@router.callback_query(F.data == "pay_method:cancel")
+async def handle_pay_cancel(callback: CallbackQuery) -> None:
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		await send_city_picker(callback.message)
+	await callback.answer("Оплата отменена", show_alert=False)
+
+
+@router.callback_query(F.data == "pay_method:operator")
+async def handle_pay_operator(callback: CallbackQuery) -> None:
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		if not operator_contact:
+			await callback.message.answer("Контакт оператора не настроен. Обратитесь к администратору.")
+			await callback.answer()
+			return
+		link = operator_contact.strip()
+		if link.startswith("@"):  # username -> ссылка
+			link = f"https://t.me/{link[1:]}"
+		kb = InlineKeyboardBuilder()
+		kb.button(text="Перейти к оператору", url=link)
+		kb.adjust(1)
+		await callback.message.answer("Свяжитесь с оператором по кнопке ниже:", reply_markup=kb.as_markup())
+	await callback.answer()
+
+
 def _persist_state() -> None:
 	state = {
 		"admins": list(admins),
@@ -1386,5 +1423,6 @@ def _persist_state() -> None:
 		"city_products_enabled": {str(k): sorted(list(v)) for k, v in city_products_enabled.items()},
 		"city_addresses": {str(k): list(v) for k, v in city_addresses.items()},
 		"city_variant_addresses": {str(k): {kv: list(av) for kv, av in v.items()} for k, v in city_variant_addresses.items()},
+		"operator_contact": operator_contact,
 	}
 	_storage_save_state(state)

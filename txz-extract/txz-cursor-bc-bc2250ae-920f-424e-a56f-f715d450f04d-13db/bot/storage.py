@@ -30,6 +30,7 @@ def default_state() -> Dict[str, Any]:
 		"products": [],  # [{"name": str, "variants": [{"size_label": str, "price_rub": int}]}]
 		"city_products_enabled": {},  # {str(city_idx): [product_idx, ...]}
 		"city_variant_addresses": {},  # {str(city_idx): {"prod:var": [address, ...]}}
+		"operator_contact": None,
 	}
 
 
