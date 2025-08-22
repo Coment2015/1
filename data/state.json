@@ -21,8 +21,8 @@
     "text": ".",
     "photo_file_id": null
   },
-  "product_select_photo_file_id": "AgACAgIAAxkBAAID_WioXQcx49Xop4KSXxMg-RQVUoG6AALO9jEbwc5ASRSsfd_5HhowAQADAgADeQADNgQ",
-  "variant_select_photo_file_id": "AgACAgIAAxkBAAIEAWioXRYwE2E_-so2XgyOFPNTlnSjAALQ9jEbwc5ASVlxVW5cMEBmAQADAgADeQADNgQ",
+  "product_select_photo_file_id": "AgACAgIAAxkBAAIE8GiocSuFHfba1hSOuWmsEQiIytJ5AAJg9zEbwc5ASXHszCmMxvMLAQADAgADeQADNgQ",
+  "variant_select_photo_file_id": "AgACAgIAAxkBAAIE9GiocTESBytv6JqCEvY1UTSBPfi6AAJi9zEbwc5ASSl4uWhzIX3oAQADAgADeQADNgQ",
   "products": [
     {
       "name": "Giov",
@@ -65,5 +65,6 @@
         "Домой вместе с шлюхами"
       ]
     }
-  }
+  },
+  "operator_contact": null
 }
