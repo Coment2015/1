@@ -146,6 +146,7 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 			[KeyboardButton(text="Фотка номера заказа")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
+			[KeyboardButton(text="Вернутся 💢")],
 		],
 		resize_keyboard=True,
 	)
@@ -503,6 +504,14 @@ async def show_interface_menu(message: Message) -> None:
 	if user_id not in admins:
 		return
 	await message.answer("Доступные настройки:", reply_markup=kb_first_message_menu())
+
+
+@router.message(F.text == "Вернутся 💢")
+async def interface_back_to_admin(message: Message) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	await show_admin_menu(message)
 
 
 @router.message(F.text == "Оператор бота")
@@ -1322,7 +1331,7 @@ async def handle_ping(message: Message) -> None:
 
 
 @router.message(F.text & ~F.text.in_(
-	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота"]
+	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота","Вернутся 💢"]
 ))
 async def handle_fallback(message: Message) -> None:
 	await message.answer(
@@ -1415,7 +1424,10 @@ async def handle_order_proceed(callback: CallbackQuery) -> None:
 		kb.button(text="🧑‍💻 Пополнить через оператора", callback_data="pay_method:operator")
 		kb.button(text="Отменить оплату 💢", callback_data="pay_method:cancel")
 		kb.adjust(1)
-		await callback.message.answer(text, reply_markup=kb.as_markup())
+		if order_summary_photo_file_id:
+			await callback.message.answer_photo(photo=order_summary_photo_file_id, caption=text, reply_markup=kb.as_markup())
+		else:
+			await callback.message.answer(text, reply_markup=kb.as_markup())
 	await callback.answer()
 
 
