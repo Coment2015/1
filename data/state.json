@@ -41,6 +41,10 @@
           "price_rub": 1903
         }
       ]
+    },
+    {
+      "name": "123",
+      "variants": []
     }
   ],
   "city_products_enabled": {
