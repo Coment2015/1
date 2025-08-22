@@ -1526,7 +1526,7 @@ async def operator_card_menu(message: Message, state: FSMContext) -> None:
 	await message.answer("Пришлите текст для блока оператора. Можно фото с подписью — тогда обновим и фото, и текст.")
 
 
-@router.message(AdminStates.waiting_operator_message_text)
+@router.message(AdminStates.waiting_operator_message_text, F.text)
 async def admin_operator_text_save(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
