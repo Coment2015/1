@@ -1,0 +1,5 @@
+nohup: ignoring input
+2025-08-22 12:03:32,538 INFO [root] Бот запущен и команды установлены
+2025-08-22 12:03:32,538 INFO [aiogram.dispatcher] Start polling
+2025-08-22 12:03:32,636 INFO [aiogram.dispatcher] Run polling for bot @Test14_88RoBot id=7818286873 - 'Test'
+2025-08-22 12:03:33,080 INFO [aiogram.event] Update id=428584514 is handled. Duration 341 ms by bot id=7818286873
