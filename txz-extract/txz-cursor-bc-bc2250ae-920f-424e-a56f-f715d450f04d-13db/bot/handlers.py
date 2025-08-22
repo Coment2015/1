@@ -523,6 +523,7 @@ async def admin_operator_contact_save(message: Message, state: FSMContext) -> No
 	if not contact:
 		await message.answer("Контакт не может быть пустым. Пришлите username или ссылку.")
 		return
+	global operator_contact
 	operator_contact = contact
 	_persist_state()
 	await state.clear()
@@ -1318,7 +1319,7 @@ async def handle_ping(message: Message) -> None:
 	await message.answer("pong")
 
 
-@router.message(F.text & ~F.text.in_(["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара"]))
+@router.message(F.text & ~F.text.in_(["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фото номера заказа"]))
 async def handle_fallback(message: Message) -> None:
 	await message.answer(
 		"Я пока не знаю, что ответить на это. Напишите /help для подсказки."
