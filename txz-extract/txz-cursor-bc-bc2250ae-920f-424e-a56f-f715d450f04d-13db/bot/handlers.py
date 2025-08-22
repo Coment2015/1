@@ -1449,6 +1449,31 @@ async def handle_pay_operator(callback: CallbackQuery) -> None:
 	await callback.answer()
 
 
+@router.message(F.text == "Фотка номера заказа")
+async def order_summary_photo_prompt(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	await state.set_state(AdminStates.waiting_order_summary_photo)
+	await message.answer("Пришлите фото, которое будет показано в карточке заказа над текстом.")
+
+
+@router.message(AdminStates.waiting_order_summary_photo, F.photo)
+async def order_summary_photo_save(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	photo = message.photo[-1] if message.photo else None
+	if not photo:
+		await message.answer("Фото не получено, попробуйте ещё раз.")
+		return
+	global order_summary_photo_file_id
+	order_summary_photo_file_id = photo.file_id
+	_persist_state()
+	await state.clear()
+	await message.answer("Фото сохранено ✅", reply_markup=kb_first_message_menu())
+
+
 def _persist_state() -> None:
 	state = {
 		"admins": list(admins),
