@@ -1522,22 +1522,8 @@ async def operator_card_menu(message: Message, state: FSMContext) -> None:
 	if user_id not in admins:
 		await message.answer("Нет прав")
 		return
-	kb = InlineKeyboardBuilder()
-	kb.row(InlineKeyboardButton(text="Изменить текст", callback_data="admin_operator_text"))
-	kb.row(InlineKeyboardButton(text="Изменить фото", callback_data="admin_operator_photo"))
-	await message.answer("Выберите действие:", reply_markup=kb.as_markup())
-
-
-@router.callback_query(F.data == "admin_operator_text")
-async def admin_operator_text_prompt(callback: CallbackQuery, state: FSMContext) -> None:
-	user_id = callback.from_user.id
-	if user_id not in admins:
-		await callback.answer("Нет прав", show_alert=False)
-		return
 	await state.set_state(AdminStates.waiting_operator_message_text)
-	await callback.answer()
-	if callback.message:
-		await callback.message.answer("Пришлите новый текст для сообщения оператора")
+	await message.answer("Пришлите текст для блока оператора. Можно фото с подписью — тогда обновим и фото, и текст.")
 
 
 @router.message(AdminStates.waiting_operator_message_text)
@@ -1547,7 +1533,7 @@ async def admin_operator_text_save(message: Message, state: FSMContext) -> None:
 		return
 	text = (message.text or "").strip()
 	if not text:
-		await message.answer("Текст пуст. Пришлите текст.")
+		await message.answer("Текст пуст. Пришлите текст или фото с подписью.")
 		return
 	global operator_message_text
 	operator_message_text = text
@@ -1556,32 +1542,24 @@ async def admin_operator_text_save(message: Message, state: FSMContext) -> None:
 	await message.answer("Текст сохранён ✅", reply_markup=kb_first_message_menu())
 
 
-@router.callback_query(F.data == "admin_operator_photo")
-async def admin_operator_photo_prompt(callback: CallbackQuery, state: FSMContext) -> None:
-	user_id = callback.from_user.id
-	if user_id not in admins:
-		await callback.answer("Нет прав", show_alert=False)
-		return
-	await state.set_state(AdminStates.waiting_operator_summary_photo)
-	await callback.answer()
-	if callback.message:
-		await callback.message.answer("Пришлите фото, которое будет показано в блоке оператора")
-
-
-@router.message(AdminStates.waiting_operator_summary_photo, F.photo)
-async def admin_operator_photo_save(message: Message, state: FSMContext) -> None:
+@router.message(AdminStates.waiting_operator_message_text, F.photo)
+async def admin_operator_text_photo_save(message: Message, state: FSMContext) -> None:
 	user_id = message.from_user.id if message.from_user else message.chat.id
 	if user_id not in admins:
 		return
 	photo = message.photo[-1] if message.photo else None
-	if not photo:
-		await message.answer("Фото не получено, попробуйте ещё раз.")
+	caption = (message.caption or "").strip()
+	if not photo and not caption:
+		await message.answer("Отправьте фото с подписью или текст.")
 		return
-	global operator_summary_photo_file_id
-	operator_summary_photo_file_id = photo.file_id
+	global operator_summary_photo_file_id, operator_message_text
+	if photo:
+		operator_summary_photo_file_id = photo.file_id
+	if caption:
+		operator_message_text = caption
 	_persist_state()
 	await state.clear()
-	await message.answer("Фото сохранено ✅", reply_markup=kb_first_message_menu())
+	await message.answer("Фото/текст для оператора сохранены ✅", reply_markup=kb_first_message_menu())
 
 
 def _persist_state() -> None:
