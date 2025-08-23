@@ -69,5 +69,7 @@
   },
   "operator_contact": "@CashGator",
   "operator_message_text": "👩‍💻‍ Оператор\n\nВ случае любых проблем с заказом или купленным товаром обращаться к оператору для дальнейшей консультации!\n\n— При обращение четко и коротко указывать суть вашей проблемы! \n— Написать город и район в котором был куплен товар! \n— Все заказы выдаются автоматически ботом, но в случае любых проблем стоит сразу написать нам!",
-  "operator_summary_photo_file_id": "AgACAgIAAxkBAAIFzGipXqHYsHfnkCK5lcpgVnM4iIziAAL8_zEbwc5ISZg5ICsqPHGDAQADAgADeQADNgQ"
+  "operator_summary_photo_file_id": "AgACAgIAAxkBAAIFzGipXqHYsHfnkCK5lcpgVnM4iIziAAL8_zEbwc5ISZg5ICsqPHGDAQADAgADeQADNgQ",
+  "payment_requisites": "",
+  "order_payment_check_photo_file_id": "AgACAgIAAxkBAAIGa2ipc8hiCxAahn8WEmcqnJ6enq8VAAKq-zEbA79BSe8S8SI6QWujAQADAgADeQADNgQ"
 }
