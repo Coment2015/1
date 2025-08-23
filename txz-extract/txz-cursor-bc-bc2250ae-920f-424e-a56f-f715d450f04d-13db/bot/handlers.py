@@ -1096,7 +1096,7 @@ async def product_photo_prompt(message: Message, state: FSMContext) -> None:
 		await message.answer("Нет прав")
 		return
 	await state.set_state(AdminStates.waiting_product_photo)
-	await message.answer("Пришлите фото, которое будет показано с сообщением ‘Выберите товар’. Можно позже заменить.")
+	await message.answer("Пришлите фото, которое будет показано с сообщением 'Выберите товар'. Можно позже заменить.")
 
 
 @router.message(AdminStates.waiting_product_photo, F.photo)
@@ -1122,7 +1122,7 @@ async def variant_photo_prompt(message: Message, state: FSMContext) -> None:
 	if user_id not in admins:
 		return
 	await state.set_state(AdminStates.waiting_variant_photo)
-	await message.answer("Пришлите фото, которое будет показано с сообщением ‘Выберите фасовку’. Можно позже заменить.")
+	await message.answer("Пришлите фото, которое будет показано с сообщением 'Выберите фасовку'. Можно позже заменить.")
 
 
 @router.message(AdminStates.waiting_variant_photo, F.photo)
@@ -1672,23 +1672,16 @@ async def handle_pay_card(callback: CallbackQuery) -> None:
 		await callback.answer("Фасовка не найдена", show_alert=False)
 		return
 	variant = product.variants[v_idx]
-	places = city_variant_addresses.get(city_idx, {}).get(f"{prod_idx}:{v_idx}", [])
-	address = places[place_idx] if 0 <= place_idx < len(places) else ""
-	display_city = (cities[city_idx] if 0 <= city_idx < len(cities) else "").replace("🦑","" ).strip()
+	# Сумма = цена + комиссия 300–350
 	base_price = variant.price_rub
 	import random as _rnd
 	fee = _rnd.randint(300, 350)
 	total = base_price + fee
-	# Сообщение
+	# Сообщение в требуемом формате
 	text = (
-		f"Заказ № {order_no}\n\n"
-		f"🏘️ Город: {display_city}\n"
-		f"🏡 Локация: {address}\n"
-		f"🔰 Товар: {product.name}\n"
-		f"♻️ Позиция: {variant.size_label}\n"
-		f"💶 Цена: {base_price}₽\n\n"
+		f"# Заказ № {order_no}\n\n"
 		f"💰 Сумма: {total}₽\n"
-		f"💳 Реквизиты:\n<code>{payment_requisites or '—'}</code>\n\n"
+		f"💳 Реквизиты:\n<pre><code>{payment_requisites or '—'}</code></pre>\n\n"
 		"⚠️ ВНИМАНИЕ! Переводите РОВНО указанную сумму — ни больше, ни меньше!\n"
 		"⏳ Перевод нужно сделать в течение 20 минут.\n\n"
 		"❗ Правила:\n"
