@@ -1466,6 +1466,7 @@ async def handle_pay_operator(callback: CallbackQuery) -> None:
 		kb = InlineKeyboardBuilder()
 		kb.button(text="Написать оператору", url=link)
 		kb.adjust(1)
+		kb.row(InlineKeyboardButton(text="Вернутся назад 💢", callback_data="pay_method:back"))
 		if operator_summary_photo_file_id:
 			await callback.message.answer_photo(photo=operator_summary_photo_file_id, caption=operator_message_text, reply_markup=kb.as_markup())
 		else:
@@ -1473,10 +1474,25 @@ async def handle_pay_operator(callback: CallbackQuery) -> None:
 	await callback.answer()
 
 
-@router.callback_query(F.data == "action:operator")
-async def handle_action_operator(callback: CallbackQuery) -> None:
-	# Поведение как у pay_method:operator
-	await handle_pay_operator(callback)
+@router.callback_query(F.data == "pay_method:back")
+async def handle_pay_back(callback: CallbackQuery) -> None:
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		text = "Выберите способ оплаты"
+		kb = InlineKeyboardBuilder()
+		kb.button(text="💳 Банковская карта (Анонимно)", callback_data="pay_method:card")
+		kb.button(text="💰 Crypto USDT (TRC-20) I BTC", callback_data="pay_method:crypto")
+		kb.button(text="🧑‍💻 Пополнить через оператора", callback_data="pay_method:operator")
+		kb.button(text="Отменить оплату 💢", callback_data="pay_method:cancel")
+		kb.adjust(1)
+		if order_summary_photo_file_id:
+			await callback.message.answer_photo(photo=order_summary_photo_file_id, caption=text, reply_markup=kb.as_markup())
+		else:
+			await callback.message.answer(text, reply_markup=kb.as_markup())
+	await callback.answer()
 
 
 @router.message(F.text == "Фотка номера заказа")
