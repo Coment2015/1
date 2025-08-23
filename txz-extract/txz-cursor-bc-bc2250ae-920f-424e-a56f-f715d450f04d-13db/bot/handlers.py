@@ -1414,9 +1414,11 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 			pass
 		# Номер заказа: ONDF-9XXXX (4 случайные цифры после 9)
 		order_no = "ONDF-9" + "".join(secrets.choice("0123456789") for _ in range(4))
+		# Очистить название города от декоративных эмодзи 🦑 и пробелов по краям
+		display_city = city_name.replace("🦑", "").strip()
 		text = (
 			f"🔘 Номер заказа: {order_no}\n\n"
-			f"🏘️ Город: {city_name}\n"
+			f"🏘️ Город: {display_city}\n"
 			f"🏡 Локация: {address}\n"
 			f"🔰 Товар: {product.name}\n"
 			f"♻️ Позиция: {variant.size_label}\n"
