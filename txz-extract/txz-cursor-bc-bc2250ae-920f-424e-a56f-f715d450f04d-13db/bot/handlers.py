@@ -471,8 +471,38 @@ async def handle_action_history(callback: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "action:operator")
 async def handle_action_operator(callback: CallbackQuery) -> None:
-	# Поведение как у pay_method:operator
-	await handle_pay_operator(callback)
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		if not operator_contact:
+			await callback.message.answer("Контакт оператора не настроен. Обратитесь к администратору.")
+			await callback.answer()
+			return
+		link = (operator_contact or "").strip()
+		if link.startswith("@"):  # username -> ссылка
+			link = f"https://t.me/{link[1:]}"
+		kb = InlineKeyboardBuilder()
+		kb.button(text="Написать оператору", url=link)
+		kb.adjust(1)
+		kb.row(InlineKeyboardButton(text="Вернутся назад 💢", callback_data="operator:back"))
+		if operator_summary_photo_file_id:
+			await callback.message.answer_photo(photo=operator_summary_photo_file_id, caption=operator_message_text, reply_markup=kb.as_markup())
+		else:
+			await callback.message.answer(operator_message_text, reply_markup=kb.as_markup())
+	await callback.answer()
+
+
+@router.callback_query(F.data == "operator:back")
+async def handle_operator_back(callback: CallbackQuery) -> None:
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		await send_city_picker(callback.message)
+	await callback.answer()
 
 
 @router.callback_query(F.data == "action:promo")
