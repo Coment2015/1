@@ -34,6 +34,8 @@ def default_state() -> Dict[str, Any]:
 		"operator_contact": None,
 		"operator_message_text": "Свяжитесь с оператором по кнопке ниже:",
 		"operator_summary_photo_file_id": None,
+		"payment_requisites": "",
+		"order_payment_check_photo_file_id": None,
 	}
 
 

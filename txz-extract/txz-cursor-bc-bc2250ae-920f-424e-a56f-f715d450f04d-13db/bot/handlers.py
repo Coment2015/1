@@ -91,6 +91,8 @@ city_variant_addresses: Dict[int, Dict[str, List[str]]] = {}
 operator_contact: Optional[str] = None
 operator_message_text: str = "Свяжитесь с оператором по кнопке ниже:"
 operator_summary_photo_file_id: Optional[str] = None
+payment_requisites: str = ""
+order_payment_check_photo_file_id: Optional[str] = None
 
 # Загрузка состояния при импорте
 _loaded = _storage_load_state()
@@ -110,6 +112,8 @@ city_variant_addresses = {int(k): {kv: list(av) for kv, av in v.items()} for k, 
 operator_contact = _loaded.get("operator_contact")
 operator_message_text = _loaded.get("operator_message_text", operator_message_text)
 operator_summary_photo_file_id = _loaded.get("operator_summary_photo_file_id")
+payment_requisites = _loaded.get("payment_requisites", "")
+order_payment_check_photo_file_id = _loaded.get("order_payment_check_photo_file_id")
 
 
 class AdminStates(StatesGroup):
@@ -126,6 +130,8 @@ class AdminStates(StatesGroup):
 	waiting_order_summary_photo = State()
 	waiting_operator_message_text = State()
 	waiting_operator_summary_photo = State()
+	waiting_payment_requisites = State()
+	waiting_payment_check_photo = State()
 
 
 # ========================= Утилиты клавиатур =========================
@@ -150,6 +156,7 @@ def kb_first_message_menu() -> ReplyKeyboardMarkup:
 			[KeyboardButton(text="Первое сообщение бота")],
 			[KeyboardButton(text="Фотка при выборе фасовки"), KeyboardButton(text="Фотка при выборе товара")],
 			[KeyboardButton(text="Фотка номера заказа"), KeyboardButton(text="Фотка и текст оператора")],
+			[KeyboardButton(text="Фотка проверки оплаты")],
 			[KeyboardButton(text="Города")],
 			[KeyboardButton(text="Добавить товар")],
 			[KeyboardButton(text="Вернутся 💢")],
@@ -529,6 +536,7 @@ async def show_admin_menu(message: Message) -> None:
 		keyboard=[
 			[KeyboardButton(text="Интерфейс бота")],
 			[KeyboardButton(text="Оператор бота")],
+			[KeyboardButton(text="Реквизиты бота")],
 		],
 		resize_keyboard=True,
 	)
@@ -1368,7 +1376,7 @@ async def handle_ping(message: Message) -> None:
 
 
 @router.message(F.text & ~F.text.in_(
-	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота","Вернутся 💢","Фотка и текст оператора"]
+	["Первое сообщение бота","Админ меню","Интерфейс бота","Города","Добавить товар","Фотка при выборе товара","Фотка при выборе фасовки","Фотка номера заказа","Фото номера заказа","Оператор бота","Вернутся 💢","Фотка и текст оператора","Фотка проверки оплаты","Реквизиты бота"]
 ))
 async def handle_fallback(message: Message) -> None:
 	await message.answer(
@@ -1426,7 +1434,7 @@ async def handle_user_place(callback: CallbackQuery) -> None:
 			"⚠️ Для оплаты заказа и получения координат, Вам необходимо нажать на кнопку ниже:"
 		)
 		kb = InlineKeyboardBuilder()
-		kb.button(text="Перейти к оплате ▶️", callback_data=f"order_proceed:{city_idx}:{prod_idx}:{v_idx}:{place_idx}")
+		kb.button(text="Перейти к оплате ▶️", callback_data=f"order_proceed:{city_idx}:{prod_idx}:{v_idx}:{place_idx}:{order_no}")
 		kb.button(text="Отменить выбор 💢", callback_data=f"order_cancel:{city_idx}")
 		kb.adjust(1)
 		if order_summary_photo_file_id:
@@ -1456,10 +1464,17 @@ async def handle_order_proceed(callback: CallbackQuery) -> None:
 			await callback.message.delete()
 		except Exception:
 			pass
+		data = (callback.data or "").split(":")
+		# order_proceed:city:prod:v:place:order_no
+		city_idx = int(data[1]) if len(data) > 1 else -1
+		prod_idx = int(data[2]) if len(data) > 2 else -1
+		v_idx = int(data[3]) if len(data) > 3 else -1
+		place_idx = int(data[4]) if len(data) > 4 else -1
+		order_no = data[5] if len(data) > 5 else ""
 		text = "Выберите способ оплаты"
 		kb = InlineKeyboardBuilder()
-		kb.button(text="💳 Банковская карта (Анонимно)", callback_data="pay_method:card")
-		kb.button(text="💰 Crypto USDT (TRC-20) I BTC", callback_data="pay_method:crypto")
+		kb.button(text="💳 Банковская карта (Анонимно)", callback_data=f"pay_method:card:{city_idx}:{prod_idx}:{v_idx}:{place_idx}:{order_no}")
+		kb.button(text="💰 Crypto USDT (TRC-20) I BTC", callback_data=f"pay_method:crypto:{city_idx}:{prod_idx}:{v_idx}:{place_idx}:{order_no}")
 		kb.button(text="🧑‍💻 Пополнить через оператора", callback_data="pay_method:operator")
 		kb.button(text="Отменить оплату 💢", callback_data="pay_method:cancel")
 		kb.adjust(1)
@@ -1610,6 +1625,108 @@ async def admin_operator_text_photo_save(message: Message, state: FSMContext) ->
 	await message.answer("Фото/текст для оператора сохранены ✅", reply_markup=kb_first_message_menu())
 
 
+@router.message(F.text == "Фотка проверки оплаты")
+async def payment_check_photo_prompt(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	await state.set_state(AdminStates.waiting_payment_check_photo)
+	await message.answer("Пришлите фото, которое будет показано при проверке оплаты.")
+
+
+@router.message(AdminStates.waiting_payment_check_photo, F.photo)
+async def payment_check_photo_save(message: Message, state: FSMContext) -> None:
+	user_id = message.from_user.id if message.from_user else message.chat.id
+	if user_id not in admins:
+		return
+	photo = message.photo[-1] if message.photo else None
+	if not photo:
+		await message.answer("Фото не получено, попробуйте ещё раз.")
+		return
+	global order_payment_check_photo_file_id
+	order_payment_check_photo_file_id = photo.file_id
+	_persist_state()
+	await state.clear()
+	await message.answer("Фото проверки оплаты сохранено ✅", reply_markup=kb_first_message_menu())
+
+
+@router.callback_query(F.data.startswith("pay_method:card:"))
+async def handle_pay_card(callback: CallbackQuery) -> None:
+	# Формирование сообщения с суммой и реквизитами
+	try:
+		parts = (callback.data or "").split(":")
+		# pay_method:card:city:prod:v:place:order_no
+		city_idx = int(parts[2])
+		prod_idx = int(parts[3])
+		v_idx = int(parts[4])
+		place_idx = int(parts[5])
+		order_no = parts[6]
+	except Exception:
+		await callback.answer("Ошибка", show_alert=False)
+		return
+	if not (0 <= prod_idx < len(products)):
+		await callback.answer("Товар не найден", show_alert=False)
+		return
+	product = products[prod_idx]
+	if not (0 <= v_idx < len(product.variants)):
+		await callback.answer("Фасовка не найдена", show_alert=False)
+		return
+	variant = product.variants[v_idx]
+	places = city_variant_addresses.get(city_idx, {}).get(f"{prod_idx}:{v_idx}", [])
+	address = places[place_idx] if 0 <= place_idx < len(places) else ""
+	display_city = (cities[city_idx] if 0 <= city_idx < len(cities) else "").replace("🦑","" ).strip()
+	base_price = variant.price_rub
+	import random as _rnd
+	fee = _rnd.randint(300, 350)
+	total = base_price + fee
+	# Сообщение
+	text = (
+		f"Заказ № {order_no}\n\n"
+		f"🏘️ Город: {display_city}\n"
+		f"🏡 Локация: {address}\n"
+		f"🔰 Товар: {product.name}\n"
+		f"♻️ Позиция: {variant.size_label}\n"
+		f"💶 Цена: {base_price}₽\n\n"
+		f"💰 Сумма: {total}₽\n"
+		f"💳 Реквизиты:\n<code>{payment_requisites or '—'}</code>\n\n"
+		"⚠️ ВНИМАНИЕ! Переводите РОВНО указанную сумму — ни больше, ни меньше!\n"
+		"⏳ Перевод нужно сделать в течение 20 минут.\n\n"
+		"❗ Правила:\n"
+		"1. Оплачивайте одним платежом, частями не принимается.\n"
+		"2. Если не успеваете — отмените заказ и оформите новый.\n"
+		f"3. При возникновении вопросов обращайтесь в поддержку: {operator_contact or '-'}\n\n"
+		"⌛ После оплаты подождите 5–10 минут — система проверит платёж и выдаст товар.\n"
+		"🚫 Пожалуйста, не отменяйте заказ без необходимости."
+	)
+	kb = InlineKeyboardBuilder()
+	kb.row(
+		InlineKeyboardButton(text="Проверить оплату 🔄", callback_data=f"payment_check:{order_no}"),
+		InlineKeyboardButton(text="Отменить оплату 💢", callback_data="pay_method:cancel"),
+	)
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		await callback.message.answer(text, reply_markup=kb.as_markup())
+	await callback.answer()
+
+
+@router.callback_query(F.data.startswith("payment_check:"))
+async def handle_payment_check(callback: CallbackQuery) -> None:
+	if callback.message:
+		try:
+			await callback.message.delete()
+		except Exception:
+			pass
+		msg = "Бот выполняет автоматическую проверку оплаты. Подтверждение поступит в течение 5-10 минут."
+		if order_payment_check_photo_file_id:
+			await callback.message.answer_photo(photo=order_payment_check_photo_file_id, caption=msg)
+		else:
+			await callback.message.answer(msg)
+	await callback.answer()
+
+
 def _persist_state() -> None:
 	state = {
 		"admins": list(admins),
@@ -1628,5 +1745,7 @@ def _persist_state() -> None:
 		"operator_contact": operator_contact,
 		"operator_message_text": operator_message_text,
 		"operator_summary_photo_file_id": operator_summary_photo_file_id,
+		"payment_requisites": payment_requisites,
+		"order_payment_check_photo_file_id": order_payment_check_photo_file_id,
 	}
 	_storage_save_state(state)
