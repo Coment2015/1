@@ -1,0 +1,75 @@
+{
+  "admins": [
+    7532884105
+  ],
+  "cities": [
+    "🦑 Москва 🦑",
+    "🦑 Санкт-Петербург 🦑",
+    "🦑 Екатеринбург 🦑",
+    "🦑 Новосибирск 🦑",
+    "🦑 Казань 🦑",
+    "🦑 Краснодар 🦑",
+    "🦑 Ростов 🦑",
+    "🦑 Пермь 🦑",
+    "🦑 Уфа 🦑",
+    "🦑 Сочи 🦑",
+    "🦑 Саратов 🦑",
+    "🦑 Самара 🦑",
+    "🦑 Воронеж 🦑"
+  ],
+  "first_message": {
+    "text": ".",
+    "photo_file_id": null
+  },
+  "product_select_photo_file_id": "AgACAgIAAxkBAAIE8GiocSuFHfba1hSOuWmsEQiIytJ5AAJg9zEbwc5ASXHszCmMxvMLAQADAgADeQADNgQ",
+  "variant_select_photo_file_id": "AgACAgIAAxkBAAIE9GiocTESBytv6JqCEvY1UTSBPfi6AAJi9zEbwc5ASSl4uWhzIX3oAQADAgADeQADNgQ",
+  "order_summary_photo_file_id": "AgACAgIAAxkBAAIFLWiodMgrUaeXBaZswbTgH_zbVMl9AAKB9zEbwc5ASbkDPRNCDDpKAQADAgADeQADNgQ",
+  "products": [
+    {
+      "name": "Giov",
+      "variants": [
+        {
+          "size_label": "2kg",
+          "price_rub": 7000
+        }
+      ]
+    },
+    {
+      "name": "Моча",
+      "variants": [
+        {
+          "size_label": "2тоны",
+          "price_rub": 1903
+        }
+      ]
+    },
+    {
+      "name": "123",
+      "variants": []
+    }
+  ],
+  "city_products_enabled": {
+    "1": [
+      0,
+      1
+    ]
+  },
+  "city_addresses": {},
+  "city_variant_addresses": {
+    "1": {
+      "0:0": [
+        "Метро жульник"
+      ],
+      "1:0": [
+        "Метро хуевкино",
+        "Мусорскоц участок",
+        "Домой вместе с шлюхами"
+      ]
+    }
+  },
+  "operator_contact": "@CashGator",
+  "operator_message_text": "👩‍💻‍ Оператор\n\nВ случае любых проблем с заказом или купленным товаром обращаться к оператору для дальнейшей консультации!\n\n— При обращение четко и коротко указывать суть вашей проблемы! \n— Написать город и район в котором был куплен товар! \n— Все заказы выдаются автоматически ботом, но в случае любых проблем стоит сразу написать нам!",
+  "operator_summary_photo_file_id": "AgACAgIAAxkBAAIFzGipXqHYsHfnkCK5lcpgVnM4iIziAAL8_zEbwc5ISZg5ICsqPHGDAQADAgADeQADNgQ",
+  "payment_requisites": "",
+  "order_payment_check_photo_file_id": "AgACAgIAAxkBAAIGa2ipc8hiCxAahn8WEmcqnJ6enq8VAAKq-zEbA79BSe8S8SI6QWujAQADAgADeQADNgQ"
+}
